@@ -20,6 +20,9 @@ def scan_terraform_directory(input_data: TerraformScanInput) -> dict:
     """
     Scans a directory for Terraform files and returns their raw contents.
     Provides clear error handling if the directory does not exist.
+    
+    Args:
+        input_data (TerraformScanInput): A Pydantic model containing the 'directory_path' string.
     """
     with tracer.start_as_current_span("scan_terraform_directory"):
         log_event("INTENT", "Scanning Terraform directory", {"path": input_data.directory_path})
@@ -45,6 +48,9 @@ def apply_terraform_remediation(input_data: RemediationPlanInput) -> dict:
     """
     Simulates applying a remediation patch to a Terraform file. 
     In a real scenario, this would use the `terraform` CLI.
+    
+    Args:
+        input_data (RemediationPlanInput): A Pydantic model containing the 'target_file' path, 'proposed_hcl_patch', and 'justification'.
     """
     with tracer.start_as_current_span("apply_terraform_remediation"):
         log_event("INTENT", "Applying Terraform Remediation", {"file": input_data.target_file})

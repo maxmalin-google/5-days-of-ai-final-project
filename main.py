@@ -1,7 +1,7 @@
 import json
 import asyncio
 from agents import scanner_agent, architect_agent, guardrail_agent
-from tools import scan_terraform_directory, apply_terraform_remediation, TerraformScanInput, RemediationPlanInput
+from tools import scan_terraform_directory, apply_terraform_remediation, TerraformScanInput, RemediationPlanInput, SecurityPolicyInput
 from memory import query_security_policy, ContextCompactor
 from observability import log_event, get_tracer
 from secrets import secret_manager
@@ -45,7 +45,7 @@ async def run_devsecops_pipeline(directory: str):
             log_event("SYS", "Invoking Architect Agent", {"anomaly": anomaly["issue"]})
             
             # Architect queries policies
-            policy_results = query_security_policy(anomaly["issue"])
+            policy_results = query_security_policy(SecurityPolicyInput(query=anomaly["issue"]))
             context_manager.add_interaction("system", f"Policy results: {policy_results}")
             
             # Architect designs fix (mocked LLM call)

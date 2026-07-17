@@ -2,6 +2,7 @@ from typing import List, Dict
 import asyncio
 import chromadb
 from observability import get_tracer, log_event
+from tools import SecurityPolicyInput
 
 tracer = get_tracer(__name__)
 
@@ -55,9 +56,14 @@ class ChromaVectorStore:
 # Singleton instance
 vector_store = ChromaVectorStore()
 
-def query_security_policy(query: str) -> dict:
-    """Tool function to query the persistent security policy database."""
-    docs = vector_store.similarity_search(query)
+def query_security_policy(input_data: SecurityPolicyInput) -> dict:
+    """
+    Tool function to query the persistent security policy database.
+    
+    Args:
+        input_data (SecurityPolicyInput): A Pydantic model containing the 'query' string to search for.
+    """
+    docs = vector_store.similarity_search(input_data.query)
     return {"status": "success", "policies": docs}
 
 
