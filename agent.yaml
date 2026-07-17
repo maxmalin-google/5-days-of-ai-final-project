@@ -1,0 +1,35 @@
+# agent.yaml - Google Agentic Development Kit Configuration
+name: devsecops-remediation-agent
+description: Multi-agent pipeline for scanning and remediating vulnerable cloud infrastructure.
+version: 1.0.0
+
+engine:
+  framework: python
+  entrypoint: "main.py"
+  python_version: "3.9"
+
+agents:
+  - name: Scanner Agent
+    model: gemini-1.5-flash
+    roles: [parser, extractor]
+  
+  - name: Architect Agent
+    model: gemini-1.5-pro
+    roles: [reasoner, planner]
+    
+  - name: Guardrail Agent
+    model: gemini-1.5-pro
+    roles: [evaluator, security]
+
+memory:
+  type: chromadb
+  path: ./chroma_db
+  persist: true
+
+infrastructure:
+  provider: gcp
+  terraform_path: ./infra/main.tf
+  
+deploy:
+  - target: cloud-run
+    service_account: devsecops-agent-sa

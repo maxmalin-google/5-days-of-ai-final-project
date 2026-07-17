@@ -29,10 +29,17 @@ This project implements a multi-agent AI system for DevSecOps using Google's Pyt
    pip install -r requirements.txt
    ```
 
-### Usage
-Run the main coordinator pipeline to scan the `mock_infra/` directory and propose remediations:
+### Usage (Local)
+Run the main coordinator pipeline locally to scan the `mock_infra/` directory and propose remediations:
 ```bash
 python main.py
+```
+
+### Usage (ADK CLI)
+This project is configured for the Google Agentic Development Kit CLI via `agent.yaml`.
+To deploy the agent and its required infrastructure (Cloud Run, Secret Manager) to GCP:
+```bash
+agent deploy --config agent.yaml
 ```
 
 ### Running Evals
