@@ -12,9 +12,15 @@ provider "google" {
   region  = "us-central1"
 }
 
-variable "project_id" {
-  type        = string
-  description = "The GCP Project ID"
+# Enable required APIs
+resource "google_project_service" "secretmanager_api" {
+  service            = "secretmanager.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "cloudrun_api" {
+  service            = "run.googleapis.com"
+  disable_on_destroy = false
 }
 
 # 1. Service Account for the Agent (Least Privilege)
@@ -36,6 +42,8 @@ resource "google_secret_manager_secret_iam_member" "agent_secret_access" {
   secret_id = google_secret_manager_secret.llm_api_key.id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.agent_sa.email}"
+  
+  depends_on = [google_project_service.secretmanager_api]
 }
 
 # 3. Cloud Run Service to host the Agent pipeline
@@ -58,4 +66,6 @@ resource "google_cloud_run_v2_service" "agent_service" {
       }
     }
   }
+  
+  depends_on = [google_project_service.cloudrun_api]
 }
